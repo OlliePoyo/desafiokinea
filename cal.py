@@ -1,6 +1,6 @@
 from workalendar.america import BrazilBankCalendar
 
-class BrazilAmbima(BrazilBankCalendar):  
+class AmbimaCalendar(BrazilBankCalendar):  
     include_ash_wednesday = False
 
     def get_variable_days(self, year):
