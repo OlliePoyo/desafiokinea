@@ -35,10 +35,10 @@ class AmbimaConnect:
 
     address_base = "https://api-sandbox.anbima.com.br"
     address_book = {
-        'titulos_publicos':f'{address_base}/feed/precos-indices/v1/titulos-publicos/mercado-secundario-TPF',
+        'titulos publicos':f'{address_base}/feed/precos-indices/v1/titulos-publicos/mercado-secundario-TPF',
         'selic': f'{address_base}/feed/precos-indices/v1/titulos-publicos/estimativa-selic',
         'vna': f"{address_base}/feed/precos-indices/v1/titulos-publicos/vna",
-        'ipca_igpm': f'{address_base}/feed/precos-indices/v1/titulos-publicos/projecoes',
+        'ipca igpm': f'{address_base}/feed/precos-indices/v1/titulos-publicos/projecoes',
         'debentures':f'{address_base}/feed/precos-indices/v1/debentures/mercado-secundario',
     }
 
