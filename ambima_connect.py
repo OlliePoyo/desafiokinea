@@ -37,14 +37,15 @@ class AmbimaConnect:
     address_book = {
         'titulos publicos':f'{address_base}/feed/precos-indices/v1/titulos-publicos/mercado-secundario-TPF',
         'selic': f'{address_base}/feed/precos-indices/v1/titulos-publicos/estimativa-selic',
-        'vna': f"{address_base}/feed/precos-indices/v1/titulos-publicos/vna",
+        'vna': f'{address_base}/feed/precos-indices/v1/titulos-publicos/vna',
         'ipca igpm': f'{address_base}/feed/precos-indices/v1/titulos-publicos/projecoes',
-        'debentures':f'{address_base}/feed/precos-indices/v1/debentures/mercado-secundario',
+        'titulos privados':f'{address_base}/feed/precos-indices/v1/debentures/mercado-secundario',
+        'ipca igpm privado': f'{address_base}/feed/precos-indices/v1/debentures/projecoes',
     }
 
     def __init__(self, category: str, params:dict={}):
-        self.address = AmbimaConnect.address_book[category.lower()]
-        for key in params: self.address += f'?{key}={params[key]}'
+            self.address = AmbimaConnect.address_book[category.lower()]
+            for key in params: self.address += f'?{key}={params[key]}'
         headers = {
             "Content-Type": "application/json",
             "access_token": AmbimaConnect.access_token,
