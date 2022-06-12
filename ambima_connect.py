@@ -44,8 +44,11 @@ class AmbimaConnect:
     }
 
     def __init__(self, category: str, params:dict={}):
+        try:
             self.address = AmbimaConnect.address_book[category.lower()]
             for key in params: self.address += f'?{key}={params[key]}'
+        except KeyError:
+            self.address = AmbimaConnect.address_base+category
         headers = {
             "Content-Type": "application/json",
             "access_token": AmbimaConnect.access_token,
