@@ -26,6 +26,7 @@ def dias_uteis(start_date:date, end_date:date) -> int:
 
 class LTN():
   def __init__(self, data_venc, taxa, data_ref):
+    self.tipo = 'LTN'
     self.data_venc = data_venc
     self.taxa = taxa
     self.data_ref = data_ref
@@ -39,6 +40,7 @@ class LTN():
 
 class NTNF():
   def __init__(self, data_venc, taxa, data_ref):
+    self.tipo = 'NTNF'
     self.data_venc = data_venc
     self.taxa = taxa
     self.data_ref = data_ref
@@ -60,6 +62,7 @@ class NTNF():
 
 class NTNB():
   def __init__(self, data_venc, taxa, data_ref):
+    self.tipo = 'NTNB'
     self.data_venc = data_venc
     self.taxa = taxa
     self.data_ref = data_ref
@@ -91,6 +94,7 @@ class NTNB():
 
 class LFT():
   def __init__(self, data_venc, taxa, data_ref):
+    self.tipo = 'LFT'
     self.data_venc = data_venc
     self.taxa = taxa
     self.data_ref = data_ref
@@ -142,3 +146,7 @@ class Priv():
 
     self.pm = (self.fluxo_pgto['dias_uteis']*self.fluxo_pgto['fv']).sum()/self.fluxo_pgto['fv'].sum()
     self.duration = (self.fluxo_pgto['dias_uteis']*self.fluxo_pgto['pv']).sum()/self.fluxo_pgto['pv'].sum()
+
+if __name__ == '__main__':
+  t = Priv(codigo_ativo='CRMD11')
+  print('end') 
