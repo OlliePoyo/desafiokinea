@@ -1,6 +1,8 @@
 from mysql.connector import connect, Error
 from constants import HOST, USER, PASSWORD, DATABASE
+from retry import retry
 
+@retry(delay=1, tries=4, jitter=2)
 def send_to_sql(sql_query:str):
   try:
       with connect(
