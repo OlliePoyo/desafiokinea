@@ -1,0 +1,4 @@
+workalendar
+pandas
+retry
+mysql-connector-python
