@@ -1,6 +1,15 @@
 import requests
 import pandas as pd
 from io import StringIO
+from retry import retry
+
+@retry(ConnectionError, delay=1, tries=4, jitter=2)
+def get_caracteristicas(ativo):
+  url_caracteristicas = f"http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/caracteristicas_e.asp?Ativo={ativo}"
+  results_caracteristicas = requests.get(url_caracteristicas)
+  csvString_caracteristicas = results_caracteristicas.content.decode('Windows 1254')
+  csvStringIO_caracteristicas = StringIO(csvString_caracteristicas)
+  return csvStringIO_caracteristicas
 
 class Debenture:
   def __init__(self, ativo):
@@ -22,11 +31,8 @@ class Debenture:
     df_agenda_fim['taxa']= 1.0
     self.agenda = df_agenda_inicio.append(df_agenda_amort, ignore_index=True).append(df_agenda_fim, ignore_index=True).drop(['evento', 'liquidacao'], axis=1)
 
-    url_caracteristicas = f"http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/caracteristicas_e.asp?Ativo={ativo}"
-    results_caracteristicas = requests.get(url_caracteristicas)
-    csvString_caracteristicas = results_caracteristicas.content.decode('Windows 1254')
-    csvStringIO_caracteristicas = StringIO(csvString_caracteristicas)
+    csvStringIO_caracteristicas = get_caracteristicas(ativo)
     self.caracteristicas = pd.read_csv(csvStringIO_caracteristicas, sep="\t", index_col=False, skiprows=[0,1,2])
     self.vne = float(self.caracteristicas['Valor Nominal na Emissao'].values[0])
-    self.juros_taxa = float(self.caracteristicas['Juros Criterio Novo - Taxa'].values[0].replace(',','.'))/100
-    self.inicio_rent = self.caracteristicas['Data do Inicio da Rentabilidade'].values[0]
+    self.juros_taxa = float(str(self.caracteristicas['Juros Criterio Novo - Taxa'].values[0]).replace(',','.'))/100
+    self.inicio_rent = self.caracteristicas[' Data do Inicio da Rentabilidade'].values[0]
