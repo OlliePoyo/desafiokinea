@@ -2,9 +2,7 @@
 import requests
 import base64 as b64
 import json
-
-client_id = "9r2j5fK3DntV"
-client_secret = "ufaORoKwRRmw"
+from constants import CLIENT_ID, CLIENT_SECRET
 
 def b64encode(data:str) -> str:
   "Codifica uma string em base64"
@@ -29,8 +27,8 @@ def get_access_token(_id:str, secret:str) -> requests.models.Response:
     return token
 
 class AmbimaConnect:
-    client_id = "9r2j5fK3DntV"
-    client_secret = "ufaORoKwRRmw"
+    client_id = CLIENT_ID
+    client_secret = CLIENT_SECRET
     access_token = get_access_token(client_id, client_secret)
 
     address_base = "https://api-sandbox.anbima.com.br"
