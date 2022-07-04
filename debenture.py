@@ -29,3 +29,4 @@ class Debenture:
     self.caracteristicas = pd.read_csv(csvStringIO_caracteristicas, sep="\t", index_col=False, skiprows=[0,1,2])
     self.vne = float(self.caracteristicas['Valor Nominal na Emissao'].values[0])
     self.juros_taxa = float(self.caracteristicas['Juros Criterio Novo - Taxa'].values[0].replace(',','.'))/100
+    self.inicio_rent = self.caracteristicas['Data do Inicio da Rentabilidade'].values[0]

@@ -115,10 +115,10 @@ class Priv():
 
     debenture = Debenture(codigo_ativo)
 
-    d_data_calc = date.today()
+    self.data_ref = datetime.strptim(debenture.inicio_rent, "$d/%m/%Y").date()
     
     self.fluxo_pgto = debenture.agenda
-    self.fluxo_pgto['dias_uteis'] = self.fluxo_pgto['data_pgto'].apply(lambda x: dias_uteis(d_data_calc, datetime.strptime(x, "%d/%m/%Y").date()))
+    self.fluxo_pgto['dias_uteis'] = self.fluxo_pgto['data_pgto'].apply(lambda x: dias_uteis(self.data_ref, datetime.strptime(x, "%d/%m/%Y").date()))
     self.fluxo_pgto['juros_perc'] = self.fluxo_pgto.loc[0, 'taxa']*(-1)
 
     self.fluxo_pgto.loc[0, 'remaining_perc'] = 1
