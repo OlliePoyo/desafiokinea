@@ -1,4 +1,5 @@
 from datetime import datetime
+from sql_connect import select_sql
 
 def format_date(date_str):
     try: # format /
@@ -7,6 +8,8 @@ def format_date(date_str):
         return f"\'{datetime.strptime(date_str, '%Y-%m-%d').date()}\'"
 
 def format_for_query(raw):
+    if isinstance(raw, int) or (isinstance(raw, float) and str(raw).lower()!='nan'):
+        return f"'{raw}'"
     try:
         try:
             raw_int = int(raw)
@@ -248,4 +251,27 @@ def debenture_query_statement(deb):
         {format_for_query(deb.duration)}
     );"""
 
-
+def agenda_query_statement(evento, codigo):
+    update_id = select_sql(
+        f"""SELECT id
+            FROM `develop`.`agenda_debentures`
+            WHERE `ativo` = {format_for_query(codigo)}
+                AND `data` = {format_for_query(evento['data_pgto'])}
+                AND `evento` = {format_for_query(evento['evento'])};"""
+    )
+    if update_id == []:
+        return f"""INSERT INTO `develop`.`agenda_debentures`(
+            `ativo`,
+            `data`,
+            `evento`,
+            `taxa`
+        )
+        VALUES (
+            {format_for_query(codigo)},
+            {format_for_query(evento['data_pgto'])},
+            {format_for_query(evento['evento'])},
+            {format_for_query(evento['taxa'])});"""
+    else:
+        return f"""UPDATE `develop`.`agenda_debentures`
+            SET taxa = {format_for_query(evento['taxa'])}
+            WHERE id = {update_id[0][0]};"""

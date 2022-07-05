@@ -7,7 +7,7 @@ from sql_connect import insert_sql
 from io import StringIO
 import requests
 from titulos import LTN, NTNB, NTNF, LFT, Priv
-from sql_utils import public_query_statement, debenture_query_statement
+from sql_utils import public_query_statement, debenture_query_statement, agenda_query_statement
 
 def public(limit=0):
     public_list = AmbimaConnect('titulos publicos').content
@@ -59,7 +59,10 @@ def debenture(limit=0):
         limit = 1
     for codigo in deb_list[:limit]:
         deb = Priv(codigo_ativo=codigo)
-
+        agenda_completa = deb.debenture.agenda_completa
+        for i in range(len(agenda_completa)):
+            query_statement = agenda_query_statement(agenda_completa.iloc[i], codigo)
+            insert_sql(query_statement)
         query_statement = debenture_query_statement(deb)
         insert_sql(query_statement)
 
