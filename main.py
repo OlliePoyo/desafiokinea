@@ -54,6 +54,9 @@ def debenture(limit=0):
     deb_list = list_debentures()
     if limit == 0:
         limit = len(deb_list)-1
+    elif limit in deb_list:
+        deb_list = [limit]
+        limit = 1
     for codigo in deb_list[:limit]:
         deb = Priv(codigo_ativo=codigo)
 
