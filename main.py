@@ -3,7 +3,7 @@ logging.level=logging.INFO
 from typing import Dict, List
 import pandas as pd
 from ambima_connect import AmbimaConnect
-from sql_connect import send_to_sql
+from sql_connect import insert_sql
 from io import StringIO
 import requests
 from titulos import LTN, NTNB, NTNF, LFT, Priv
@@ -39,7 +39,7 @@ def public(limit=0):
                 data_ref=titulo['data_referencia'],
                 )
         query_statement = public_query_statement(titulo, calc)
-        send_to_sql(query_statement)
+        insert_sql(query_statement)
 
 def list_debentures():
     url_list = 'http://www.debentures.com.br/exploreosnd/consultaadados/emissoesdedebentures/caracteristicas_e.asp?op_exc=False'
@@ -61,7 +61,7 @@ def debenture(limit=0):
         deb = Priv(codigo_ativo=codigo)
 
         query_statement = debenture_query_statement(deb)
-        send_to_sql(query_statement)
+        insert_sql(query_statement)
 
 def handler():
     public()
