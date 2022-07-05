@@ -113,37 +113,31 @@ class Priv():
   def __init__(self, codigo_ativo):
     self.codigo_ativo = codigo_ativo
 
-    debenture = Debenture(codigo_ativo)
+    self.debenture = Debenture(codigo_ativo)
 
-    self.caracteristicas = debenture.caracteristicas
+    self.caracteristicas = self.debenture.caracteristicas
 
-    self.data_ref = datetime.strptime(debenture.inicio_rent, "%d/%m/%Y").date()
+    self.data_ref = datetime.strptime(self.debenture.inicio_rent, "%d/%m/%Y").date()
     
-    self.fluxo_pgto = debenture.agenda
+    self.fluxo_pgto = self.debenture.agenda_amort
     self.fluxo_pgto['dias_uteis'] = self.fluxo_pgto['data_pgto'].apply(lambda x: dias_uteis(self.data_ref, datetime.strptime(x, "%d/%m/%Y").date()))
     self.fluxo_pgto['juros_perc'] = self.fluxo_pgto.loc[0, 'taxa']*(-1)
 
-    self.fluxo_pgto.loc[0, 'remaining_perc'] = 1
-    self.fluxo_pgto.loc[0, 'amort'] = debenture.vne * self.fluxo_pgto.loc[0, 'taxa']
-    self.fluxo_pgto.loc[0, 'juros'] = debenture.vne * self.fluxo_pgto.loc[0, 'juros_perc']
 
-    for i in range(1, len(self.fluxo_pgto)):
-      self.fluxo_pgto.loc[i, 'remaining_perc'] = self.fluxo_pgto.loc[i-1, 'remaining_perc'] * (1-self.fluxo_pgto.loc[i, 'taxa'])
-      self.fluxo_pgto.loc[i, 'amort_perc'] = self.fluxo_pgto.loc[i-1, 'remaining_perc'] - self.fluxo_pgto.loc[i, 'remaining_perc']
-
-    self.fluxo_pgto.loc[1, 'amort'] = debenture.vne * self.fluxo_pgto.loc[1, 'amort_perc']
-    self.fluxo_pgto.loc[0, 'sld_dev'] = debenture.vne - self.fluxo_pgto.loc[0, 'amort']
+    self.fluxo_pgto.loc[0, 'amort'] = self.debenture.vne * self.fluxo_pgto.loc[0, 'taxa']
+    self.fluxo_pgto.loc[1, 'amort'] = self.debenture.vne * self.fluxo_pgto.loc[1, 'taxa']
+    self.fluxo_pgto.loc[0, 'sld_dev'] = self.debenture.vne - self.fluxo_pgto.loc[0, 'amort']
     self.fluxo_pgto.loc[1, 'sld_dev'] = self.fluxo_pgto.loc[0, 'sld_dev'] - self.fluxo_pgto.loc[1, 'amort']
-
     for i in range(2, len(self.fluxo_pgto)):
-      self.fluxo_pgto.loc[i, 'amort'] = self.fluxo_pgto.loc[1, 'sld_dev'] * self.fluxo_pgto.loc[i, 'amort_perc']
+      self.fluxo_pgto.loc[i, 'amort'] = self.fluxo_pgto.loc[1, 'sld_dev'] * self.fluxo_pgto.loc[i, 'taxa']
       self.fluxo_pgto.loc[i, 'sld_dev'] = self.fluxo_pgto.loc[i-1, 'sld_dev'] - self.fluxo_pgto.loc[i, 'amort']
 
+    self.fluxo_pgto.loc[0, 'juros'] = self.debenture.vne * self.fluxo_pgto.loc[0, 'juros_perc']
     for i in range(1, len(self.fluxo_pgto)):
       self.fluxo_pgto.loc[i, 'juros'] = self.fluxo_pgto.loc[i, 'sld_dev'] * self.fluxo_pgto.loc[i, 'juros_perc']
 
     self.fluxo_pgto['fv'] = self.fluxo_pgto['amort'] + self.fluxo_pgto['juros']
-    self.fluxo_pgto['fator_desc'] = (debenture.juros_taxa+1)**(self.fluxo_pgto['dias_uteis']/252)
+    self.fluxo_pgto['fator_desc'] = (self.debenture.juros_taxa+1)**(self.fluxo_pgto['dias_uteis']/252)
     self.fluxo_pgto['pv'] = self.fluxo_pgto['fv']/self.fluxo_pgto['fator_desc']
 
     self.pm = (self.fluxo_pgto['dias_uteis']*self.fluxo_pgto['fv']).sum()/self.fluxo_pgto['fv'].sum()
